@@ -5,6 +5,6 @@ simple twitter clone
 - spring-boot
 - spring-security
 - maven
-- mustache
+- freemarker
 - jpa
 - postgresql
