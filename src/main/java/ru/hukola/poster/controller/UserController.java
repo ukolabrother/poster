@@ -36,14 +36,13 @@ public class UserController {
         return "userEdit";
     }
 
-    @PostMapping("{user}")
+    @PostMapping
     public String userSave(
-            @RequestParam String username,
+            @RequestParam String userName,
             @RequestParam Map<String, String> form,
             @RequestParam("userId") User user
     ) {
-        user.setUsername(username);
-        userRepository.save(user);
+        user.setUsername(userName);
         Set<String> roles = Arrays.stream(Role.values())
                 .map(Role::name)
                 .collect(Collectors.toSet());
@@ -53,6 +52,7 @@ public class UserController {
                 user.getRoles().add(Role.valueOf(key));
             }
         }
+        userRepository.save(user);
         return "redirect:/user";
     }
 }
