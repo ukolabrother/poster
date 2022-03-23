@@ -15,7 +15,6 @@
     <div class="collapse" id="collapseExample">
         <div class="form-group mt-3">
             <form method="post" enctype="multipart/form-data">
-                <input type="hidden" name="_csrf" value="${_csrf.token}"/>
                 <div class="form-group">
                     <input type="text" class="form-control" name="text" placeholder="input post">
                 </div>
@@ -31,6 +30,7 @@
                 <div class="form-group">
                     <button type="submit" class="btn btn-primary">add</button>
                 </div>
+                <input type="hidden" name="_csrf" value="${_csrf.token}"/>
             </form>
         </div>
     </div>
