@@ -10,8 +10,8 @@ import ru.hukola.poster.domain.Role;
 import ru.hukola.poster.domain.User;
 import ru.hukola.poster.repositories.UserRepository;
 
-import java.util.Collections;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -37,6 +37,12 @@ public class UserService implements UserDetailsService {
         user.setActivationCode(UUID.randomUUID().toString());
         userRepository.save(user);
 
+        sendActivationEmail(user);
+
+        return true;
+    }
+
+    private void sendActivationEmail(User user) {
         if (!StringUtils.hasText(user.getEmail())) {
             String message = String.format(
                     "Hello, %s.%s" +
@@ -47,8 +53,6 @@ public class UserService implements UserDetailsService {
             );
             mailSender.send(user.getEmail(), "Activation code", message);
         }
-
-        return true;
     }
 
     public boolean activateUser(String code) {
@@ -63,5 +67,50 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
 
         return false;
+    }
+
+    public List<User> findAll() {
+        return userRepository.findAll();
+    }
+
+    public void saveUser(User user, String userName, Map<String, String> form) {
+        user.setUsername(userName);
+        Set<String> roles = Arrays.stream(Role.values())
+                .map(Role::name)
+                .collect(Collectors.toSet());
+        user.getRoles().clear();
+        for (String key : form.keySet()) {
+            if (roles.contains(key)) {
+                user.getRoles().add(Role.valueOf(key));
+            }
+        }
+        userRepository.save(user);
+    }
+
+    public void updateUserProfile(User user, String password, String email) {
+        String curEmail = user.getEmail();
+
+        boolean isEmailChanged = (email != null && !email.equals(curEmail)) ||
+                (curEmail != null && curEmail.equals(email));
+
+        if (isEmailChanged) {
+            user.setEmail(email);
+
+            if (!StringUtils.hasText(email)) {
+                user.setActivationCode(UUID.randomUUID().toString());
+            }
+
+            if (StringUtils.hasText(password)) {
+                user.setPassword(password);
+            }
+        }
+
+        userRepository.save(user);
+
+        if (isEmailChanged) {
+            sendActivationEmail(user);
+        }
+
+
     }
 }
