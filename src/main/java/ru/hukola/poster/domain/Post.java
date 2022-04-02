@@ -1,13 +1,20 @@
 package ru.hukola.poster.domain;
 
+import org.hibernate.validator.constraints.Length;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 
 @Entity
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    @NotBlank(message="please fill the post text")
+    @Length(max=2048, message="post text too long")
     private String text;
+    @Length(max=255, message="post text too long")
     private String tag;
     private String filename;
 

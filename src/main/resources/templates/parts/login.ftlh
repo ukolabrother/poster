@@ -2,17 +2,46 @@
     <form method="post" action="${path}">
         <div class="form-group col-md-4">
             <label for="exampleInputEmail1">User Name:</label>
-            <input type="text" class="form-control" name="username" aria-describedby="emailHelp"
+            <input type="text" class="form-control  ${(usernameError??)?string('is-invalid', '')}"
+                   name="username" aria-describedby="emailHelp" value="<#if user??>${user.username}</#if>"
                    placeholder="input login"/>
+            <#if usernameError??>
+                <div class="invalid-feedback">
+                    ${usernameError}
+                </div>
+            </#if>
         </div>
         <div class="form-group col-md-4">
             <label for="exampleInputPassword1">Password:</label>
-            <input type="password" class="form-control" name="password" placeholder="input password"/>
+            <input type="password" class="form-control ${(passwordError??)?string('is-invalid', '')}"
+                   name="password" placeholder="input password"/>
+            <#if passwordError??>
+                <div class="invalid-feedback">
+                    ${passwordError}
+                </div>
+            </#if>
         </div>
         <#if isRegisterForm>
             <div class="form-group col-md-4">
+                <label for="exampleInputPassword1">Password:</label>
+                <input type="password" class="form-control ${(password2Error??)?string('is-invalid', '')}"
+                       name="password2" placeholder="retype password"/>
+                <#if password2Error??>
+                    <div class="invalid-feedback">
+                        ${password2Error}
+                    </div>
+                </#if>
+            </div>
+            <div class="form-group col-md-4">
                 <label for="exampleInputPassword1">Email:</label>
-                <input type="email" class="form-control" name="email" placeholder="input email"/>
+                <input type="email" class="form-control ${(emailError??)?string('is-invalid', '')}"
+                       value="<#if user??>${user.email}</#if>"
+                       name="email" placeholder="input email"/>
+                <#if emailError??>
+                    <div class="invalid-feedback">
+                        ${emailError}
+                    </div>
+                </#if>
             </div>
         </#if>
         <input type="hidden" name="_csrf" value="${_csrf.token}"/>
